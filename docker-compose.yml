@@ -1,0 +1,41 @@
+version: '3.5'
+
+services:
+
+  api:
+    image: api:dev
+    build:
+      context: .
+      dockerfile: ./dockerfiles/php-nginx/Dockerfile
+      target: dev
+    volumes:
+      - ./:/app
+    expose:
+      - 80
+    ports:
+      - 80:80
+
+  app-db:
+    image: mysql:5.7.20
+    ports:
+      - 3306:3306
+    volumes:
+      - app-data:/var/lib/mysql
+    expose:
+      - 3306
+    environment:
+      MYSQL_ROOT_PASSWORD: "root"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "root"
+      MYSQL_DATABASE: "a-database"
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - PMA_ARBITRARY=1
+    ports:
+      - 8080:80
+
+volumes:
+  app-data:
+    external: false
