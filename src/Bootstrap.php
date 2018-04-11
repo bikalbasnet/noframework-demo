@@ -23,6 +23,9 @@ if ($environment !== 'production') {
 
 $whoops->register();
 
+$injector = include('Dependencies.php');
+$request = $injector->make(\Http\Request::class);
+$response = $injector->make(\Http\Response::class);
 $request = new \Http\HttpRequest($_GET, $_POST, $_COOKIE, $_FILES, $_SERVER);
 $response = new \Http\HttpResponse;
 
@@ -54,11 +57,9 @@ switch ($routeInfo[0]) {
         $method = $routeInfo[1][1];
         $vars = $routeInfo[2];
 
-        $class = new $className;
+        $class =$injector->make($className);
         $class->$method($vars);
         break;
 }
-
-
 
 echo $response->getContent();
