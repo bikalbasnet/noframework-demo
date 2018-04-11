@@ -15,4 +15,19 @@ $injector->define(\Http\Request::class, [
 $injector->alias(\Http\Response::class, \Http\HttpResponse::class);
 $injector->share(\Http\HttpResponse::class);
 
+$injector->alias(\Example\Template\Renderer::class, \Example\Template\MustacheRenderer::class);
+$injector->define(Mustache_Engine::class, [
+    ':options' => [
+        'loader' => new Mustache_Loader_FilesystemLoader(dirname(__DIR__) . '/src/templates', [
+            'extension' => '.html',
+        ]),
+    ],
+]);
+
+$injector->alias(\Example\Page\PageReader::class, \Example\Page\FilePageReader::class);
+$injector->define(\Example\Page\PageReader::class, [
+    ':pageFolder' => __DIR__ . '/pages',
+]);
+$injector->share(Example\Page\PageReader::class);
+
 return $injector;
